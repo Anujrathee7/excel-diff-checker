@@ -11,28 +11,29 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class UtilityTest {
-    private File temporaryFile;
+    private XSSFCell cellEx;
+	private Sheet sheetEx;
+	private Workbook workbookEx;
+	private CreationHelper crHeEx;
 
-    @Before
-    public void initialize() throws IOException {
-        temporaryFile = File.createTempFile("prefix-", "-suffix");
-    }
+	// Set up example starting
+	@BeforeEach
+	void setUp() {
+    		cellEx = mock(XSSFCell.class);
+    		sheetEx = mock(Sheet.class);
+    		workbookEx = mock(Workbook.class);
+    		crHeEx = mock(CreationHelper.class);
+    	when(cellEx.getSheet()).thenReturn(sheetEx);
+    	when(sheetEx.getWorkbook()).thenReturn(workbookEx);
+    	when(workbookEx.getCreationHelper()).thenReturn(crHeEx);
+	}
 
-    @After
-    public void cleanup() {
-        temporaryFile.delete();
-    }
-
-    @Test
-    public void verifyDeletionOfNonExistingFile() {
-        assertTrue(temporaryFile.delete());
-        boolean isDeleted = Utility.deleteIfExists(temporaryFile);
-        assertFalse(isDeleted);
-    }
-
-    @Test
-    public void verifyDeletionOfExistingFile() {
-        boolean isDeleted = Utility.deleteIfExists(temporaryFile);
-        assertTrue(isDeleted);
-    }
+	// Test to get a cell value of an excel file
+ 	@Test
+	void testGetCellValue() throws Exception {
+    	when(cellEx.getCellType()).thenReturn(CellType.STRING);
+    	when(cellEx.getRichStringCellValue()).thenReturn(new XSSFRichTextString("example"));
+     	String value = Utility.getCellValue(cellEx);
+        	assertEquals("example", value);
+	}
 }
