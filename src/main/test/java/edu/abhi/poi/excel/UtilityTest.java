@@ -11,24 +11,28 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class UtilityTest {
-    private File tempFile;
+    private File temporaryFile;
+
     @Before
-    public void setup() throws IOException{
-        tempFile = File.createTempFile("prefix-", "-suffix");
+    public void initialize() throws IOException {
+        temporaryFile = File.createTempFile("prefix-", "-suffix");
     }
+
     @After
-    public void tearDown(){
-        tempFile.delete();
+    public void cleanup() {
+        temporaryFile.delete();
     }
+
     @Test
-    public void deleteIfExistsNonExistingFileTest(){
-        assertTrue(tempFile.delete());
-        boolean result = Utility.deleteIfExists(tempFile);
-        assertFalse(result);
+    public void verifyDeletionOfNonExistingFile() {
+        assertTrue(temporaryFile.delete());
+        boolean isDeleted = Utility.deleteIfExists(temporaryFile);
+        assertFalse(isDeleted);
     }
-     @Test
-    public void deleteIfExistsExistingFileTest(){
-        boolean result = Utility.deleteIfExists(tempFile);
-        assertTrue(result);
+
+    @Test
+    public void verifyDeletionOfExistingFile() {
+        boolean isDeleted = Utility.deleteIfExists(temporaryFile);
+        assertTrue(isDeleted);
     }
 }
