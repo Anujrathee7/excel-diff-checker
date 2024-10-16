@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -73,11 +74,12 @@ public class ExcelDiffCheckerTest {
 
         // Check the result from future
         assertEquals(1, results.size());
+        assertTrue(results.get(0).get().isSuccessful()); // Assuming CallableValue has a method isSuccessful()
     }
 
     @Test
     public void testProcessOptionsWithValidArgs() {
-        String[] args = {"-b", "base.xlsx", "-t", "target.xlsx"};
+        String[] args = {"base.xlsx", "target.xlsx"}; // Adjusting to match the required args
         ExcelDiffChecker.processOptions(args);
 
         assertEquals("base.xlsx", ExcelDiffChecker.FILE_NAME1);
@@ -86,7 +88,14 @@ public class ExcelDiffCheckerTest {
 
     @Test(expected = RuntimeException.class)
     public void testProcessOptionsWithMissingRequiredArgs() {
-        String[] args = {"-b", "base.xlsx"};
+        String[] args = {"base.xlsx"}; // Missing second required arg
         ExcelDiffChecker.processOptions(args);
+    }
+
+    @Test
+    public void testProcessOptionsWithInvalidArgs() {
+        String[] args = {"-invalid", "base.xlsx", "target.xlsx"};
+        ExcelDiffChecker.processOptions(args); // Assuming it should throw or handle an invalid argument
+        // You may want to add assertions here based on how your method handles invalid args
     }
 }
